@@ -1,0 +1,38 @@
+{
+  "name": "task-management-system",
+  "private": true,
+  "workspaces": [
+    "client",
+    "server"
+  ],
+  "scripts": {
+    "dev:client": "bun --cwd client dev",
+    "dev:server": "bun --cwd server dev",
+    "dev": "concurrently \"bun dev:client\" \"bun dev:server\"",
+    "build:client": "bun --cwd client build",
+    "build:server": "bun --cwd server build",
+    "build": "bun build:server && bun build:client",
+    "lint": "eslint .",
+    "typecheck": "bun --cwd client typecheck && bun --cwd server typecheck",
+    "db:migrate": "bun --cwd server migrate",
+    "db:seed": "bun server/src/db/seed.ts",
+    "format": "prettier --write \"**/*.{ts,tsx,md,json}\"",
+    "prepare": "husky install",
+    "test": "bun test --parallel",
+    "clean": "rm -rf node_modules **/node_modules",
+    "kubb": "bun --cwd client generate",
+    "preview-routes": "bun --cwd server preview-routes"
+  },
+  "devDependencies": {
+    "@kubb/plugin-zod": "^3.3.4",
+    "concurrently": "^8.2.2",
+    "eslint": "^8.56.0",
+    "husky": "^9.1.7",
+    "prettier": "^3.4.2",
+    "tsx": "^4.7.1",
+    "typescript": "^5.3.3"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}

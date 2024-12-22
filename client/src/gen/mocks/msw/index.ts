@@ -1,0 +1,6 @@
+export { listsHandler } from './IndexHandlers/listsHandler.ts'
+export { createTaskHandler } from './TasksHandlers/createTaskHandler.ts'
+export { deleteTaskByIdHandler } from './TasksHandlers/deleteTaskByIdHandler.ts'
+export { getTaskByIdHandler } from './TasksHandlers/getTaskByIdHandler.ts'
+export { listTasksHandler } from './TasksHandlers/listTasksHandler.ts'
+export { updateTaskByIdHandler } from './TasksHandlers/updateTaskByIdHandler.ts'
