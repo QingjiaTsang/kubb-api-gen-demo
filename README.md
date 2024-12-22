@@ -1,34 +1,34 @@
 # Kubb API Generation Demo
 
-A full-stack TypeScript demo showcasing type-safe API integration using Kubb. This project demonstrates how to generate type-safe API clients from OpenAPI specifications, featuring React Query hooks with Zod validation.
+A full-stack TypeScript demo showcasing type-safe API integration using [Kubb](https://kubb.dev/). This project demonstrates how to generate type-safe API clients from OpenAPI specifications, featuring [React Query](https://tanstack.com/query/latest) hooks with [Zod](https://zod.dev/) validation.
 
 ## Key Demonstrations
 
 - Automatic generation of type-safe React Query hooks from OpenAPI specs
 - Integration of Zod for runtime type validation
 - Automated operation ID generation for API routes
-- MSW (Mock Service Worker) integration for API mocking
-- Full-stack TypeScript setup with HonoJS and React
+- [MSW](https://mswjs.io/) (Mock Service Worker) integration for API mocking
+- Full-stack TypeScript setup with [HonoJS](https://hono.dev/) and [React](https://react.dev/)
 
 ## Tech Stack
 
 ### Frontend
 
-- React 18
-- TypeScript
-- Vite
-- TanStack Query
-- Tailwind CSS
-- MSW for mocking
-- Kubb for API generation
+- [React 18](https://react.dev/)
+- [TypeScript](https://www.typescriptlang.org/)
+- [Vite](https://vitejs.dev/)
+- [TanStack Query](https://tanstack.com/query/latest)
+- [Tailwind CSS](https://tailwindcss.com/)
+- [MSW](https://mswjs.io/) for mocking
+- [Kubb](https://kubb.dev/) for API generation
 
 ### Backend
 
-- HonoJS
-- TypeScript
-- SQLite with Drizzle ORM
-- OpenAPI/Swagger
-- Pino Logger
+- [HonoJS](https://hono.dev/)
+- [TypeScript](https://www.typescriptlang.org/)
+- SQLite with [Drizzle ORM](https://orm.drizzle.team/)
+- [OpenAPI](https://www.openapis.org/)/[Swagger](https://swagger.io/)
+- [Pino](https://getpino.io/) Logger
 
 ## Project Structure
 
@@ -50,8 +50,8 @@ A full-stack TypeScript demo showcasing type-safe API integration using Kubb. Th
 1. Clone the repository:
 
    ```bash
-   git clone <repo-url>
-   cd task-management-system
+   git clone https://github.com/QingjiaTsang/kubb-api-gen-demo
+   cd kubb-api-gen-demo
    ```
 
 2. Install dependencies:
@@ -138,3 +138,7 @@ The client includes configurable API mocking:
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
 This is a demo project created for learning purposes and to showcase full-stack development with kubb.
+
+## Acknowledgments
+
+This project is built on top of [hono-open-api-starter](https://github.com/w3cj/hono-open-api-starter) by [w3cj](https://github.com/w3cj). Thanks for providing such an excellent template for building type-safe APIs with HonoJS and OpenAPI! 🙏
