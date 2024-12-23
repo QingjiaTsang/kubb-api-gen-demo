@@ -1,4 +1,4 @@
-import { eq } from 'drizzle-orm';
+import { desc, eq } from 'drizzle-orm';
 import * as HttpStatusCodes from 'stoker/http-status-codes';
 import * as HttpStatusPhrases from 'stoker/http-status-phrases';
 import { sql } from 'drizzle-orm';
@@ -22,6 +22,7 @@ export const list: AppRouteHandler<ListRoute> = async c => {
     db.query.tasks.findMany({
       limit,
       offset,
+      orderBy: desc(tasks.updatedAt),
     }),
     db
       .select({ count: tasks.id })

@@ -2,7 +2,29 @@
 import { config } from 'dotenv';
 import { expand } from 'dotenv-expand';
 import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { z } from 'zod';
+
+// Compatible with two scenarios:
+// 1. Running in the server directory
+// 2. Running in the project root directory
+const filename = fileURLToPath(import.meta.url);
+const dirname = path.dirname(filename);
+
+const serverDir = path.resolve(dirname, '..');
+
+const isInServerDir = process.cwd().includes('server');
+const baseDir = isInServerDir ? process.cwd() : serverDir;
+
+const envFile = process.env.NODE_ENV === 'test' ? '.env.test' : '.env';
+const envPath = path.resolve(baseDir, envFile);
+
+console.log({
+  cwd: process.cwd(),
+  serverDir,
+  baseDir,
+  envPath,
+});
 
 expand(
   config({

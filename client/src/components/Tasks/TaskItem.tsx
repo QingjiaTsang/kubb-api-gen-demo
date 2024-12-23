@@ -10,7 +10,7 @@ import {
 import { useQueryClient } from '@tanstack/react-query';
 
 interface TaskItemProps {
-  task: ListTasks200['data'][number];
+  task: ListTasks200['data'][number] & { isOptimistic?: boolean };
 }
 
 export default function TaskItem({ task }: TaskItemProps) {
@@ -65,54 +65,61 @@ export default function TaskItem({ task }: TaskItemProps) {
   };
 
   return (
-    <div className="flex gap-3 items-center p-3 bg-white rounded-lg shadow">
-      <input
-        type="checkbox"
-        checked={task.done}
-        onChange={handleToggleDone}
-        className="w-5 h-5 rounded border-gray-300"
-      />
+    <div
+      className={`
+        rounded-lg transition-all duration-200
+        ${task.isOptimistic ? 'bg-gray-500/90 animate-pulse opacity-90 shadow-sm' : 'bg-white'}
+      `}
+    >
+      <div className="flex gap-3 items-center p-3 bg-white rounded-lg shadow">
+        <input
+          type="checkbox"
+          checked={task.done}
+          onChange={handleToggleDone}
+          className="w-5 h-5 rounded border-gray-300"
+        />
 
-      {isEditing ? (
-        <div className="flex flex-1 gap-2">
-          <input
-            type="text"
-            value={editedName}
-            onChange={e => setEditedName(e.target.value)}
-            className="flex-1 px-2 py-1 rounded border"
-          />
-          <button
-            onClick={handleUpdateName}
-            className="px-3 py-1 text-sm text-white bg-blue-500 rounded hover:bg-blue-600"
-          >
-            Save
-          </button>
-          <button
-            onClick={() => setIsEditing(false)}
-            className="px-3 py-1 text-sm text-gray-600 bg-gray-100 rounded hover:bg-gray-200"
-          >
-            Cancel
-          </button>
-        </div>
-      ) : (
-        <div className="flex flex-1 justify-between items-center">
-          <span className={`${task.done ? 'line-through text-gray-400' : ''}`}>{task.name}</span>
-          <div className="flex gap-2">
+        {isEditing ? (
+          <div className="flex flex-1 gap-2">
+            <input
+              type="text"
+              value={editedName}
+              onChange={e => setEditedName(e.target.value)}
+              className="flex-1 px-2 py-1 rounded border"
+            />
             <button
-              onClick={() => setIsEditing(true)}
-              className="px-3 py-1 text-sm text-blue-600 rounded hover:bg-blue-50"
+              onClick={handleUpdateName}
+              className="px-3 py-1 text-sm text-white bg-blue-500 rounded hover:bg-blue-600"
             >
-              Edit
+              Save
             </button>
             <button
-              onClick={handleDeleteTask}
-              className="px-3 py-1 text-sm text-red-600 rounded hover:bg-red-50"
+              onClick={() => setIsEditing(false)}
+              className="px-3 py-1 text-sm text-gray-600 bg-gray-100 rounded hover:bg-gray-200"
             >
-              Delete
+              Cancel
             </button>
           </div>
-        </div>
-      )}
+        ) : (
+          <div className="flex flex-1 justify-between items-center">
+            <span className={`${task.done ? 'line-through text-gray-400' : ''}`}>{task.name}</span>
+            <div className="flex gap-2">
+              <button
+                onClick={() => setIsEditing(true)}
+                className="px-3 py-1 text-sm text-blue-600 rounded hover:bg-blue-50"
+              >
+                Edit
+              </button>
+              <button
+                onClick={handleDeleteTask}
+                className="px-3 py-1 text-sm text-red-600 rounded hover:bg-red-50"
+              >
+                Delete
+              </button>
+            </div>
+          </div>
+        )}
+      </div>
     </div>
   );
 }

@@ -1,31 +1,95 @@
 import { useState } from 'react';
-import { listTasksQueryKey, useCreateTaskHook } from '@/gen/hooks/api/tasks';
+import { listTasksInfiniteQueryKey, useCreateTaskHook } from '@/gen/hooks/api/tasks';
 import { useQueryClient } from '@tanstack/react-query';
+import type { ListTasks200 } from '@/gen/models/ListTasks';
+import type { InfiniteData } from '@tanstack/react-query';
+
+// Define the context type
+type CreateTaskContext = {
+  previousData: InfiniteData<ListTasks200> | undefined;
+};
+
+const DEFAULT_QUERY_KEY_PARAMS = {
+  limit: '10',
+} as const;
+
+type TaskWithOptimistic = ListTasks200['data'][number] & {
+  isOptimistic?: boolean;
+};
 
 export default function CreateTaskForm() {
   const [name, setName] = useState('');
-  const { mutate: createTask, isPending: isCreatingTask } = useCreateTaskHook();
-
   const queryClient = useQueryClient();
+
+  const { mutate: createTask, isPending: isCreatingTask } = useCreateTaskHook({
+    mutation: {
+      onMutate: async ({ data }) => {
+        const queryKey = listTasksInfiniteQueryKey(DEFAULT_QUERY_KEY_PARAMS);
+
+        await queryClient.cancelQueries({ queryKey });
+
+        const previousData = queryClient.getQueryData<InfiniteData<ListTasks200>>(queryKey);
+
+        // Optimistically update the cache
+        queryClient.setQueryData<InfiniteData<ListTasks200>>(queryKey, old => {
+          if (!old) {
+            return previousData;
+          }
+
+          // 添加 isOptimistic 标记
+          const newTask: TaskWithOptimistic = {
+            id: Date.now(),
+            name: data.name,
+            done: data.done,
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString(),
+            isOptimistic: true,
+          };
+
+          // Update the first page data
+          const updatedFirstPage = {
+            ...old.pages[0],
+            data: [newTask, ...old.pages[0].data],
+            total: old.pages[0].total + 1,
+          };
+
+          return {
+            ...old,
+            pages: [updatedFirstPage, ...old.pages.slice(1)],
+          };
+        });
+
+        return { previousData };
+      },
+
+      onError: (_err, _variables, context) => {
+        // Roll back to the previous state when an error occurs
+        if ((context as CreateTaskContext)?.previousData) {
+          const queryKey = listTasksInfiniteQueryKey(DEFAULT_QUERY_KEY_PARAMS);
+          queryClient.setQueryData(queryKey, (context as CreateTaskContext).previousData);
+        }
+      },
+
+      onSettled: () => {
+        // After completion, re-fetch data to ensure synchronization
+        const queryKey = listTasksInfiniteQueryKey(DEFAULT_QUERY_KEY_PARAMS);
+        queryClient.invalidateQueries({ queryKey });
+      },
+    },
+  });
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!name.trim()) return;
 
-    createTask(
-      {
-        data: {
-          name: name.trim(),
-          done: false,
-        },
+    createTask({
+      data: {
+        name: name.trim(),
+        done: false,
       },
-      {
-        onSuccess: () => {
-          setName('');
-          queryClient.invalidateQueries({ queryKey: listTasksQueryKey() });
-        },
-      }
-    );
+    });
+
+    setName('');
   };
 
   return (

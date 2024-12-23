@@ -31,13 +31,12 @@ export const TaskList = () => {
 };
 
 export const TaskListInfinite = () => {
-  const { data, isLoading, error, hasNextPage, fetchNextPage, isFetchingNextPage } =
+  const { data, isLoading, isFetching, error, hasNextPage, fetchNextPage, isFetchingNextPage } =
     useListTasksInfiniteHook(
       { limit: '10' },
       {
         query: {
           getNextPageParam: lastPage => {
-            console.log({ lastPage });
             if (lastPage.page >= lastPage.totalPages) {
               return undefined;
             }
@@ -48,10 +47,6 @@ export const TaskListInfinite = () => {
     );
 
   const loadMoreRef = useRef<HTMLDivElement>(null);
-
-  console.log({
-    hasNextPage,
-  });
 
   useEffect(() => {
     const observer = new IntersectionObserver(
